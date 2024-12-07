@@ -50,7 +50,7 @@
     (error "Validation error" (format "~a: Values are not distinct: ~a" description values))))
 
 (define (setTestCase test-case-id)
-  (printf "Running test case ~a...\n" test-case-id))
+  (printf "Validating test case ~a...\n" test-case-id))
 
 (define (readEoln)
   (let ([next-char (peek-char)])
@@ -61,9 +61,9 @@
   (unless (eof-object? (peek-char))
     (error "Validation error" "Expected end of file but input is not fully consumed")))
 
-;;; ;; Validate tests in a sandbox
+;; Validate tests in a sandbox
 ;;; (define (validate-tests validator tests)
-;;;   (define sandbox (make-evaluator 'racket)) ; Simplified evaluator creation without `#:sandbox-output`
+;;;   (define sandbox (make-evaluator 'racket/base)) ; Create a basic evaluator
   
 ;;;   (for ([test tests] 
 ;;;         [i (in-naturals)]) ; Iterate over each test case
@@ -72,7 +72,9 @@
 ;;;       (with-handlers ([exn:fail? 
 ;;;                        (lambda (exn)
 ;;;                          (printf "Test case ~a failed: ~a\n" (+ i 1) (exn-message exn)))])
-;;;         (sandbox (lambda () (validator test))))))) ; Evaluate the validator in the sandbox
+;;;         (sandbox (lambda () 
+;;;                    (parameterize ([current-output-port (current-output-port)]) ; Capture output in sandbox
+;;;                      (validator test)))))))) ; Run the validator inside the sandbox
 
 (define (validate-tests validator tests)
   (for ([test tests] 
