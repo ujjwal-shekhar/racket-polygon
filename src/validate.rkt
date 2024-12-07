@@ -10,6 +10,7 @@
   (define (absolute-paths dir)
     (map (lambda (p) (build-path dir p))
         (directory-list dir)))
+
   (define (load-tests path)
     (map file->string (absolute-paths path))) ; Load all test files as strings
 

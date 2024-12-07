@@ -61,12 +61,25 @@
   (unless (eof-object? (peek-char))
     (error "Validation error" "Expected end of file but input is not fully consumed")))
 
-;; Validate tests in a sandbox
-(define (validate-tests validator tests)
-  (define sandbox (make-evaluator 'racket)) ; Simplified evaluator creation without `#:sandbox-output`
+;;; ;; Validate tests in a sandbox
+;;; (define (validate-tests validator tests)
+;;;   (define sandbox (make-evaluator 'racket)) ; Simplified evaluator creation without `#:sandbox-output`
   
+;;;   (for ([test tests] 
+;;;         [i (in-naturals)]) ; Iterate over each test case
+;;;     (setTestCase (+ i 1)) ; Set the test case number
+;;;     (parameterize ([current-input-port (open-input-string test)]) ; Set the input port for each test case
+;;;       (with-handlers ([exn:fail? 
+;;;                        (lambda (exn)
+;;;                          (printf "Test case ~a failed: ~a\n" (+ i 1) (exn-message exn)))])
+;;;         (sandbox (lambda () (validator test))))))) ; Evaluate the validator in the sandbox
+
+(define (validate-tests validator tests)
   (for ([test tests] 
         [i (in-naturals)]) ; Iterate over each test case
     (setTestCase (+ i 1)) ; Set the test case number
     (parameterize ([current-input-port (open-input-string test)]) ; Set the input port for each test case
-      (sandbox (lambda () (validator test)))))) ; Evaluate the validator in the sandbox
+      (with-handlers ([exn:fail? 
+                       (lambda (exn)
+                         (printf "Test case ~a failed: ~a\n" (+ i 1) (exn-message exn)))])
+        (validator test)))))
