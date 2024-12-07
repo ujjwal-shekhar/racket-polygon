@@ -7,11 +7,13 @@
 
 ; Validate problem test cases
 (define (run-validation validator tests-path)
+  (define (absolute-paths dir)
+    (map (lambda (p) (build-path dir p))
+        (directory-list dir)))
   (define (load-tests path)
-    (map file->string (directory-list path))) ; Load all test files as strings
+    (map file->string (absolute-paths path))) ; Load all test files as strings
 
   (define tests (load-tests tests-path))
-  ;;; (println (list "HIHIH" (file->string (directory-list path))))
   (validate-tests validator tests))
 
 (module+ main
