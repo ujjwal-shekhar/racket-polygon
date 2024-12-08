@@ -1,6 +1,6 @@
 #lang racket
 
-(require "core/validator-dsl.rkt"        ; Path to core DSL
+(require "src/core/validator-dsl.rkt"        ; Path to core DSL
          "user-code/user-validator.rkt") ; Path to user-defined validator
 
 (provide run-validation)
@@ -19,4 +19,4 @@
 
 (module+ main
   (printf "Running validator...\n")
-  (run-validation validate-sum-of-two-numbers "src/user-code/tests")) ; Reference the validator
+  (run-validation validate-sum-of-two-numbers "user-code/tests")) ; Reference the validator

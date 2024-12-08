@@ -1,8 +1,8 @@
 #lang racket
 
-(require "core/problem.rkt"
-         "core/latex-generator.rkt"
-         "core/pdf-generator.rkt")
+(require "src/core/problem.rkt"
+         "src/core/latex-generator.rkt"
+         "src/core/pdf-generator.rkt")
 
 (provide create-problem-folder)
 

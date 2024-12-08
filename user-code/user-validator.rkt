@@ -1,8 +1,6 @@
 #lang racket
 
-(require "../core/validator-dsl.rkt") ; Adjust path to core
-
-(provide validate-sum-of-two-numbers) ; Export the validator function
+(require "../src/core/validator-dsl.rkt")
 
 (define-validator validate-sum-of-two-numbers
   (setTestCase 1)
@@ -11,3 +9,5 @@
     (ensure (< (+ a b) 2000000000) "Sum exceeds the allowed maximum: ~a" (+ a b))
     (readEoln)
     (readEof)))
+
+(provide validate-sum-of-two-numbers)

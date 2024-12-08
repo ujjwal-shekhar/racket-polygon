@@ -6,7 +6,7 @@
 
 ; Compile LaTeX content into a PDF
 (define (compile-latex-to-pdf latex-content output-folder)
-  (define tex-file (build-path output-folder "problem.tex")) ; Use build-path
+  (define tex-file (build-path output-folder "problem.tex"))
   (define pdf-file (build-path output-folder "problem.pdf"))
 
   ; Write LaTeX to a .tex file
