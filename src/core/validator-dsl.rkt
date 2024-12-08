@@ -76,12 +76,26 @@
 ;;;                    (parameterize ([current-output-port (current-output-port)]) ; Capture output in sandbox
 ;;;                      (validator test)))))))) ; Run the validator inside the sandbox
 
+;;; (define (validate-tests validator tests)
+;;;   (for ([test tests] 
+;;;         [i (in-naturals)]) ; Iterate over each test case
+    
+;;;     (setTestCase (+ i 1)) ; Set the test case number
+;;;     (parameterize ([current-input-port (open-input-string test)]) ; Set the input port for each test case
+;;;       (with-handlers ([exn:fail? 
+;;;                        (lambda (exn)
+;;;                          (printf "Test case ~a failed: ~a\n" (+ i 1) (exn-message exn)))])
+;;;         (validator test)))))
+
+        
 (define (validate-tests validator tests)
   (for ([test tests] 
         [i (in-naturals)]) ; Iterate over each test case
+    
     (setTestCase (+ i 1)) ; Set the test case number
-    (parameterize ([current-input-port (open-input-string test)]) ; Set the input port for each test case
-      (with-handlers ([exn:fail? 
-                       (lambda (exn)
-                         (printf "Test case ~a failed: ~a\n" (+ i 1) (exn-message exn)))])
-        (validator test)))))
+    (let ([trimmed-test (string-trim test)]) ; Remove leading/trailing whitespace
+      (parameterize ([current-input-port (open-input-string trimmed-test)]) ; Set the input port for the trimmed test case
+        (with-handlers ([exn:fail? 
+                         (lambda (exn)
+                           (printf "Test case ~a failed: ~a\n" (+ i 1) (exn-message exn)))])
+          (validator trimmed-test)))))) ; Run the validator on the trimmed input
