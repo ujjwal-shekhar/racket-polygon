@@ -12,31 +12,44 @@
     (make-directory output-dir))
 
   (println "Running programs on inputs...")
+  ; (flush-output) ;; Ensure this message is immediately printed
 
   (for ([program (directory-list program-dir)]
         [input (directory-list input-dir)])
+    ;; Construct the full paths for input and program
+    (define program-path (build-path program-dir (path->string program)))
+    (define input-path (build-path input-dir (path->string input)))
 
-    ; (println (format "Running ~a on ~a..." (path->string program) (path->string input)))
-    ;; Print value of input and program
-    ; (println (format "Input: ~a" input))
-    ;; Read the input content
-    (define input-content (file->string input))
-    ;; Extract the input file's name using split-path
-    (define-values (base-name _ext) (split-path input))
-    (define input-name (path->string base-name))
+    (println (format "Running ~a on ~a..." (path->string program-path) (path->string input-path)))
+    ; (flush-output) ;; Ensure this message is immediately printed
+
+    ;; Read the input content from the correct input path
+    (define input-content (file->string input-path))
+
+    (println (format "Input Content: ~a" input-content))
+
+    ;; Remove last 4 characters (e.g., ".txt") to get the base input name
+    (define input-name (substring (path->string input) 0 (- (string-length (path->string input)) 4)))
+
+    (println (format "Input Name: ~a" input-name))
+    ; (flush-output) ;; Ensure this message is immediately printed
+
     ;; Build the output file path
     (define output-file (build-path output-dir (string-append input-name ".out")))
+
+    (println (format "Output File: ~a" (path->string output-file)))
 
     ;; Run the program and store the output
     (with-output-to-file output-file
       (lambda ()
         (parameterize ([current-input-port (open-input-string input-content)])
-          (system (format "racket ~a" program)))))
+          ;; Use the full path of the program
+          (system (format "racket ~a" (path->string program-path))))))
 
+    ;; Print completion message
     (printf "Ran ~a on ~a, output saved to ~a\n"
-            (path->string program) input-name (path->string output-file))))
+            (path->string program) input-name (path->string output-file))
+    (flush-output))) ;; Ensure the completion message is immediately printed
 
-
-(run-programs-on-inputs "../../user-code/model-solutions/"
-                        "../../user-code/checker-tests/"
-                        "model-temp")
+;; Example usage
+(run-programs-on-inputs "../model-dir" "../test-dir" "../output-dir")
