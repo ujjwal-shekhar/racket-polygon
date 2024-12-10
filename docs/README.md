@@ -1,8 +1,3 @@
-Apologies for the confusion! Here's the **complete and copyable Markdown** for your `README.md` file:
-
-
-
-
 # Problem PDF Generator, Validator, and Test Case Generator in Racket
 
 This project provides a flexible framework to generate problem PDFs, validate test cases, and create random test cases for competitive programming problems. It uses **Racket** and includes a **Domain-Specific Language (DSL)** for defining test case generators and validators.
