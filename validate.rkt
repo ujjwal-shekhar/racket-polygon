@@ -1,6 +1,6 @@
 #lang racket
 
-(require "src/core/validator-dsl.rkt"        ; Path to core DSL
+(require "src/core/validator-dsl.rkt"    ; Path to core DSL
          "user-code/user-validator.rkt") ; Path to user-defined validator
 
 (provide run-validation)

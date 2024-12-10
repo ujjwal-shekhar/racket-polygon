@@ -4,6 +4,16 @@
 (require "../core/problem.rkt")
 (provide generate-latex)
 
+; Helper to format constraints for LaTeX
+(define (format-constraints constraints)
+  (string-join
+   (map (λ (constraint)
+          (if (regexp-match? #rx"[<>^]" constraint) ; Check if it contains math symbols
+              (format "\\item \\( ~a \\)" constraint) ; Wrap in math mode
+              (format "\\item ~a" constraint))) ; Keep as plain text
+        constraints)
+   "\n"))
+
 ; Generate LaTeX for a problem
 (define (generate-latex problem)
   (format "
@@ -23,6 +33,7 @@
 \\begin{itemize}
   \\item Time Limit: ~a seconds
   \\item Memory Limit: ~a MB
+  ~a
 \\end{itemize}
 
 \\subsection*{Input Format}
@@ -46,6 +57,7 @@
           (problem-description problem)
           (problem-time-limit problem)
           (problem-memory-limit problem)
+          (format-constraints (problem-constraints problem))
           (problem-input-format problem)
           (problem-output-format problem)
           (string-join

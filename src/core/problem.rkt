@@ -4,7 +4,7 @@
 
 ; Struct for a problem
 (struct problem (name description time-limit memory-limit
-                      input-format output-format sample-tests notes))
+                      input-format output-format sample-tests notes constraints))
 
 ; DSL function for defining problems
 (define (define-problem name #:time-limit [time-limit 2]
@@ -13,9 +13,10 @@
                         #:input-format input-format
                         #:output-format output-format
                         #:sample-tests sample-tests
-                        #:notes [notes ""])
+                        #:notes [notes ""]
+                        #:constraints [constraints '()])
   (problem name description time-limit memory-limit
-           input-format output-format sample-tests notes))
+           input-format output-format sample-tests notes constraints))
 
 (provide problem
          problem-name
@@ -25,4 +26,5 @@
          problem-input-format
          problem-output-format
          problem-sample-tests
-         problem-notes)
+         problem-notes
+         problem-constraints)

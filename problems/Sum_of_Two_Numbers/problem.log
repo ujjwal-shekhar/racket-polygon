@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.12.6)  8 DEC 2024 12:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.12.6)  10 DEC 2024 12:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -300,7 +300,7 @@ Package rerunfilecheck Info: File `problem.out' has not changed.
 Here is how much of TeX's memory you used:
  8486 strings out of 480247
  131054 string characters out of 5896151
- 414035 words of memory out of 5000000
+ 415035 words of memory out of 5000000
  26348 multiletter control sequences out of 15000+600000
  472811 words of font info for 42 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -312,7 +312,7 @@ b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on ./problems/Sum_of_Two_Numbers/problem.pdf (1 page, 66804 byte
+Output written on ./problems/Sum_of_Two_Numbers/problem.pdf (1 page, 67658 byte
 s).
 PDF statistics:
  57 PDF objects out of 1000 (max. 8388607)
