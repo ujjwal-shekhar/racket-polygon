@@ -5,7 +5,14 @@
   rnd-rand-int
   rnd-rand-str
   generate-random-test-case-to-file
-  generate-custom-test-case-to-file)
+  generate-custom-test-case-to-file
+  rnd-tree
+  rnd-weighted-tree
+  rnd-graph
+  write-edges-to-file
+  rnd-bipartite-graph
+  write-bipartite-graph-to-file
+  random-weighted)
 
 ;; Function for partitioning sum_n into test_count parts
 (define (rnd-partition test-count sum-n)
@@ -25,6 +32,102 @@
 (define (rnd-rand-str n)
   "Generate a random string of length n."
   (apply string (build-list n (λ (_) (integer->char (+ 97 (random 26)))))))
+
+;; Function to generate a random permutation of integers from 1 to n
+(define (rnd-permutation n)
+  "Generate a random permutation of integers from 1 to n."
+  (define arr (build-list n (λ (i) (+ i 1)))) ; Create a list [1, 2, ..., n]
+  (shuffle arr)) ; Shuffle the list randomly
+
+;; Function to generate a random tree as a list of edges
+(define (rnd-tree n)
+  "Generate a random tree represented as a list of edges."
+  (define parent (build-list n (λ (i) (if (= i 0) 0 (random i)))))
+  (shuffle (for/list ([i (in-range 1 n)]) (list (add1 i) (add1 (list-ref parent i))))))
+
+;; Function to generate a weighted random tree
+(define (rnd-weighted-tree n t)
+  "Generate a weighted tree using a weighted random attachment rule."
+  (define parent (build-list n (λ (i) (if (= i 0) 0 (random-weighted i t)))))
+  (shuffle (for/list ([i (in-range 1 n)]) (list (add1 i) (add1 (list-ref parent i))))))
+
+;; Helper function for weighted random selection
+(define (random-weighted size t)
+  "Select an index with a weighted random probability influenced by t."
+  (define weights (build-list size (λ (i) (expt (+ i 1) t)))) ; Weight each index
+  (define sum-weights (apply + weights)) ; Total sum of weights
+  (define rnd (random sum-weights)) ; Random number in range
+  (for ([i (in-range size)])
+    (set! rnd (- rnd (list-ref weights i)))
+    (when (< rnd 0) (values i)))) ; Use values to return the selected index
+
+;; Function to generate a random connected graph
+(define (rnd-graph n m)
+  "Generate a random connected graph with n nodes and m edges."
+  (define edges (set)) ; Store edges in a set to avoid duplicates
+  ;; Generate a tree first to ensure the graph is connected
+  (define tree-edges (rnd-tree n))
+  (for ([e tree-edges]) (set-add! edges e))
+  ;; Add random edges to meet the desired edge count
+  (for ([i (in-range (- m (- n 1)))])
+    (define u (+ 1 (random n)))
+    (define v (+ 1 (random n)))
+    (when (and (not (= u v)) (not (set-member? edges (list u v))) (not (set-member? edges (list v u))))
+      (set-add! edges (list u v))))
+  (shuffle (set->list edges)))
+
+;; Function to generate a random bipartite graph
+(define (rnd-bipartite-graph n m k t)
+  "Generate a random bipartite graph with n nodes in set A, m nodes in set B, and k edges."
+  ;; Recursive helper to generate k unique edges
+  (define (generate-edges edges count)
+    (if (= count 0)
+        (set->list edges)  ; Convert the set of edges to a list when done
+        (let* ([a (random-weighted n t)]  ; Randomly select a node from set A
+               [b (random-weighted m t)]  ; Randomly select a node from set B
+               [new-edge (list a b)])     ; Create a new edge
+          (if (set-member? edges new-edge)
+              (generate-edges edges count)  ; If the edge exists, try again
+              (generate-edges (set-add edges new-edge) (- count 1)))))) ; Add edge and decrement count
+
+  ;; Generate edges
+  (define edges (generate-edges (set) k))
+
+  ;; Generate permutations for nodes in sets A and B
+  (define pa (shuffle (build-list n (λ (i) (+ i 1)))))
+  (define pb (shuffle (build-list m (λ (i) (+ i 1)))))
+
+  ;; Map edges to the permuted node labels
+  (define mapped-edges
+    (map (λ (edge)
+           (list (list-ref pa (first edge)) (list-ref pb (second edge))))
+         edges))
+
+  (values pa pb mapped-edges))  ; Return the permutations and edges using `values`
+
+;; Function to write edges to a file
+(define (write-edges-to-file edges filename)
+  "Write a list of edges to a file."
+  (define out (open-output-file filename #:mode 'text #:exists 'replace))
+  (displayln (length edges) out) ; Write the number of edges
+  (for ([edge edges]) (fprintf out "~a ~a\n" (first edge) (second edge))) ; Write each edge
+  (close-output-port out))
+
+;; Function to write a bipartite graph to a file
+(define (write-bipartite-graph-to-file filename n m k t)
+  "Generate and write a bipartite graph to a file."
+  (define out (open-output-file filename #:mode 'text #:exists 'replace))
+
+  ;; Generate the bipartite graph
+  (define-values (pa pb edges) (rnd-bipartite-graph n m k t))
+
+  ;; Write graph parameters
+  (fprintf out "~a ~a ~a\n" n m (length edges))
+
+  ;; Write edges
+  (for-each (λ (edge) (fprintf out "~a ~a\n" (first edge) (second edge))) edges)
+
+  (close-output-port out))
 
 ;; Function to generate random test cases and write them to a file
 (define (generate-random-test-case-to-file test-count min-a max-a filename print-t-n?)
