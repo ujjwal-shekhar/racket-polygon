@@ -1,6 +1,7 @@
 #lang racket
-(define (check-test-case test-case)
-  (let ((a (car test-case))
-        (b (cadr test-case)))
-    (and (<= 1 a 100)
-         (<= 1 b 100))))
+
+(require "../src/core/checker-dsl.rkt")
+
+(provide run-checker)
+
+(define-checker run-checker (model-dir user-dir test-dir))
